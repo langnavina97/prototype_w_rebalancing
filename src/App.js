@@ -100,8 +100,13 @@ class App extends Component {
       nftTokenBalance: 0,
       defiTokenBalance: 0,
 
+      defiTokenBalanceMainnet: 0,
+
       rebalance1: 0,
       rebalance2: 0,
+      
+      ethPerc: 0,
+      btcPerc: 0,
 
       rate: 0
     }
@@ -120,7 +125,9 @@ class App extends Component {
 
     if(chainIdDec == "97") {
       await this.calcTokenBalances();
-    }  
+    } else if(chainIdDec == "56") {
+      await this.calcTokenBalanceMainnet();
+    }
   }
 
   // first up is to detect ethereum provider
@@ -252,21 +259,10 @@ class App extends Component {
         swal("Investment failed!");
       }
 
+      await this.calcTokenBalanceMainnet();
+
     }
 
-  calcTokenBalanceMainnet = async(token, user) => {
-    const web3 = new Web3(window.ethereum);
-    const vault = "0xD2aDa2CC6f97cfc1045B1cF70b3149139aC5f2a2";
-
-    const indexShare = this.state.IndexSwap.methods.balanceOf(user).call();
-    const totalSupplyIndex = this.state.IndexSwap.totalSupply().call();
-
-    const TokenContract = new web3.eth.Contract(IERC.abi, token);
-    const tokenSupply = TokenContract.methods.balanceOf(vault).call();
-
-    let tokenShare = indexShare / totalSupplyIndex;
-    return tokenShare * tokenSupply;
-  }
 
   approveNFTTokens = async() => {
     const web3 = new Web3(window.ethereum);  
@@ -361,6 +357,8 @@ class App extends Component {
         console.log(err);
       });
 
+      await this.calcTokenBalanceMainnet();
+
   }
 
   withdrawNFTMainnet = async () => {
@@ -448,6 +446,24 @@ class App extends Component {
     let nftTokenBalance = web3.utils.fromWei(nftTokenBalanceInWei, "ether");
 
     this.setState({ defiTokenBalance, nftTokenBalance });
+    
+  }
+
+  calcTokenBalanceMainnet = async () => {
+    const web3 = new Web3(window.ethereum);
+    let defiTokenBalanceInWei = await this.state.SwapContract.methods.balanceOf(this.state.account).call();
+    let defiTokenBalanceMainnet = web3.utils.fromWei(defiTokenBalanceInWei, "ether");
+
+    const tokenBalances = (await this.state.SwapContract.methods.getTokenAndVaultBalance().call())[0];
+    const vaultBalance = (await this.state.SwapContract.methods.getTokenAndVaultBalance().call())[1];
+
+    console.log("token", tokenBalances);
+    console.log("vault", vaultBalance);
+
+    let btcPerc = tokenBalances[0] / vaultBalance;
+    let ethPerc = tokenBalances[1] / vaultBalance;
+
+    this.setState({ defiTokenBalanceMainnet, btcPerc, ethPerc });
     
   }
 
@@ -641,7 +657,7 @@ class App extends Component {
                             <Table.Cell style={{ color: "#C0C0C0" }}>-</Table.Cell>
                           </Table.Row>
                         </Table.Body>
-                      </Table>
+                    </Table>
 
                   </Card.Description>
                 </Card.Content>
@@ -693,6 +709,32 @@ class App extends Component {
                         <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
                       </Form>
 
+                      <Table style={{ "margin-left": "auto", "margin-right": "auto" }} basic='very' celled collapsing>
+                        <Table.Header>
+                          <Table.Row>
+                            <Table.HeaderCell style={{ color: "white" }}>Token</Table.HeaderCell>
+                            <Table.HeaderCell style={{ color: "white" }}>Balance</Table.HeaderCell>
+                          </Table.Row>
+                        </Table.Header>
+
+                        <Table.Body>
+                          <Table.Row>
+                            <Table.Cell style={{ color: "#C0C0C0" }}>Top10 Token</Table.Cell>
+                            <Table.Cell style={{ color: "#C0C0C0" }}>{this.state.defiTokenBalanceMainnet}</Table.Cell>
+                          </Table.Row>
+
+                          <Table.Row>
+                            <Table.Cell style={{ color: "#C0C0C0" }}>Bitcoin</Table.Cell>
+                            <Table.Cell style={{ color: "#C0C0C0" }}>{this.state.btcPerc} %</Table.Cell>
+                          </Table.Row>
+
+                          <Table.Row>
+                            <Table.Cell style={{ color: "#C0C0C0" }}>Ethereum</Table.Cell>
+                            <Table.Cell style={{ color: "#C0C0C0" }}>{this.state.ethPerc} %</Table.Cell>
+                          </Table.Row>
+                        </Table.Body>
+                      </Table>
+
                     </Card.Description>
                   </Card.Content>
                 </Card>
@@ -720,7 +762,6 @@ class App extends Component {
         {mainnet}
         
         {testnet}
-
       </div >
     );
   }
