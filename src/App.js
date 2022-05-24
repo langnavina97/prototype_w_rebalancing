@@ -147,7 +147,7 @@ class App extends Component {
     }
     if(chainIdDec == "56") {
       this.setState({ account: accounts[0]}) 
-      const SwapContract = new web3.eth.Contract(IndexSwap.abi, "0x7FEBC062EaCDd7E81fa76198373530Bd9C4Ba9De");
+      const SwapContract = new web3.eth.Contract(IndexSwap.abi, "0x610571b323A7Cbf03F957fd551c35BB79Cff1E10");
       const NFTPortfolioContract = new web3.eth.Contract(NFTSwap.abi, "0x40A367c5320440a1aa78aCBC5af0A017Ed1F3772"); 
       this.setState({ SwapContract, NFTPortfolioContract});
     } else if (chainIdDec == "97") {
