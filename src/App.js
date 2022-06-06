@@ -104,6 +104,14 @@ class App extends Component {
 
       rebalance1: 0,
       rebalance2: 0,
+      rebalance3: 0,
+      rebalance4: 0,
+      rebalance5: 0,
+      rebalance6: 0,
+      rebalance7: 0,
+      rebalance8: 0,
+      rebalance9: 0,
+      rebalance10: 0,
       
       ethPerc: 0,
       btcPerc: 0,
@@ -154,7 +162,7 @@ class App extends Component {
     }
     if(chainIdDec == "56") {
       this.setState({ account: accounts[0]}) 
-      const SwapContract = new web3.eth.Contract(IndexSwap.abi, "0x610571b323A7Cbf03F957fd551c35BB79Cff1E10");
+      const SwapContract = new web3.eth.Contract(IndexSwap.abi, "0x187b397599d81285a987466bD14790CF779B69E8");
       const NFTPortfolioContract = new web3.eth.Contract(NFTSwap.abi, "0x40A367c5320440a1aa78aCBC5af0A017Ed1F3772"); 
       this.setState({ SwapContract, NFTPortfolioContract});
     } else if (chainIdDec == "97") {
@@ -301,38 +309,30 @@ class App extends Component {
 
   approveDeFiTokens = async() => {
     const web3 = new Web3(window.ethereum);  
-    const contractAddress = "0xCC645998E7240325690489FC33174063563aa322";
-    const vault = "0xa05Ae01a56779a75FDBAa299965E0C1087E11cbc";
+    const contractAddress = "0x5DA92941262768deA5018114e64EB73b937B5Cb0";
+    const vault = "0x07C0737fdc21adf93200bd625cc70a66B835Cf8b";
 
-    const BTCTokenConntract = new web3.eth.Contract(IERC.abi, "0x4b1851167f74FF108A994872A160f1D6772d474b");
+    const BTCTokenConntract = new web3.eth.Contract(IERC.abi, "0x8BaBbB98678facC7342735486C851ABD7A0d17Ca");
     BTCTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
 
-    const ETHTokenConntract = new web3.eth.Contract(IERC.abi, "0x8BaBbB98678facC7342735486C851ABD7A0d17Ca");
+    const ETHTokenConntract = new web3.eth.Contract(IERC.abi, "0x8a9424745056Eb399FD19a0EC26A14316684e274");
     ETHTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
 
-    const SHIBATokenConntract = new web3.eth.Contract(IERC.abi, "0xBf0646Fa5ABbFf6Af50a9C40D5E621835219d384");
+    const SHIBATokenConntract = new web3.eth.Contract(IERC.abi, "0x4b1851167f74FF108A994872A160f1D6772d474b");
     SHIBATokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
 
-    const XRPTokenConntract = new web3.eth.Contract(IERC.abi, "0xCc00177908830cE1644AEB4aD507Fda3789128Af");
+    const XRPTokenConntract = new web3.eth.Contract(IERC.abi, "0xb7a58582Df45DBa8Ad346c6A51fdb796D64e0898");
     XRPTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
 
-    const LTCTokenConntract = new web3.eth.Contract(IERC.abi, "0x2F9fd65E3BB89b68a8e2Abd68Db25F5C348F68Ee");
+    const LTCTokenConntract = new web3.eth.Contract(IERC.abi, "0x62955C6cA8Cd74F8773927B880966B7e70aD4567");
     LTCTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
 
-    const DAITokenConntract = new web3.eth.Contract(IERC.abi, "0x8a9424745056Eb399FD19a0EC26A14316684e274");
+    const DAITokenConntract = new web3.eth.Contract(IERC.abi, "0x2F9fd65E3BB89b68a8e2Abd68Db25F5C348F68Ee");
     DAITokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
 
-    const LUNATokenConntract = new web3.eth.Contract(IERC.abi, "0x0bBF12a9Ccd7cD0E23dA21eFd3bb16ba807ab069");
+    const LUNATokenConntract = new web3.eth.Contract(IERC.abi, "0x8D908A42FD847c80Eeb4498dE43469882436c8FF");
     LUNATokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
 
-    const LINKTokenConntract = new web3.eth.Contract(IERC.abi, "0x8D908A42FD847c80Eeb4498dE43469882436c8FF");
-    LINKTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
-
-    const UNITokenConntract = new web3.eth.Contract(IERC.abi, "0x62955C6cA8Cd74F8773927B880966B7e70aD4567");
-    UNITokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
-
-    const STETHTokenConntract = new web3.eth.Contract(IERC.abi, "0xb7a58582Df45DBa8Ad346c6A51fdb796D64e0898");
-    STETHTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
   }
 
   withdrawDeFiMainnet = async () => {
@@ -457,9 +457,6 @@ class App extends Component {
     const tokenBalances = (await this.state.SwapContract.methods.getTokenAndVaultBalance().call())[0];
     const vaultBalance = (await this.state.SwapContract.methods.getTokenAndVaultBalance().call())[1];
 
-    console.log("token", tokenBalances);
-    console.log("vault", vaultBalance);
-
     let btcPerc = tokenBalances[0] / vaultBalance;
     let ethPerc = tokenBalances[1] / vaultBalance;
 
@@ -571,7 +568,15 @@ class App extends Component {
   rebalance = async() => {
     let rebalance1 = this.state.rebalance1;
     let rebalance2 = this.state.rebalance2;
-    let rebalance = [rebalance1, rebalance2];
+    let rebalance3 = this.state.rebalance3;
+    let rebalance4 = this.state.rebalance4;
+    let rebalance5 = this.state.rebalance5;
+    let rebalance6 = this.state.rebalance6;
+    let rebalance7 = this.state.rebalance7;
+    let rebalance8 = this.state.rebalance8;
+    let rebalance9 = this.state.rebalance9;
+    let rebalance10 = this.state.rebalance10;
+    let rebalance = [rebalance1, rebalance2, rebalance3, rebalance4, rebalance5,rebalance6,rebalance7, rebalance8, rebalance9, rebalance10];
     await this.state.SwapContract.methods.rebalance(rebalance).send({from: this.state.account});
   }
 
@@ -688,52 +693,24 @@ class App extends Component {
                 <Card style={{ width: "900px" }}>
                   <Card.Content style={{ background: "#406ccd" }}>
                     <Card.Header style={{ color: "white" }}>
-                    <p style={{ color: "#C0C0C0", "font-weight": "bold", "text-align": "right" }}>APY: XX%</p>
-                      Top 10 Tokens
+                      Top 10 Venus - Asset Management
                       </Card.Header>
                     <Card.Description>
 
-                      <Form onSubmit={this.investDeFiMainnet}>
-                        <Input style={{ width: "300px", padding: 3 }} required type="text" placeholder="BNB amount to create" name="defiToMintMainnet" onChange={this.handleInputChange}></Input>
-                        <Button color="green" type="submit" style={{ margin: "20px", width: "150px" }}>Create</Button>
-                      </Form>
-
-                      <Form onSubmit={this.withdrawDeFiMainnet}>
-                        <Input style={{ width: "300px", padding: 3 }} required type="text" placeholder="TOP15 amount to redeem" name="withdrawValueNFT" onChange={this.handleInputChange}></Input>
-                        <Button color="green" style={{ margin: "20px", width: "150px" }}>Redeem</Button>
-                      </Form>
-
                       <Form onSubmit={this.rebalance}>
-                        <Input style={{ width: "150px", padding: 3 }} required type="text" placeholder="5000 for 50%" name="rebalance1" onChange={this.handleInputChange}></Input>
-                        <Input style={{ width: "150px", padding: 3 }} required type="text" placeholder="5000 for 50%" name="rebalance2" onChange={this.handleInputChange}></Input>
+                        <Input label='BTC' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance1" onChange={this.handleInputChange}></Input><br></br>
+                        <Input label='ETH' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance2" onChange={this.handleInputChange}></Input><br></br>
+                        <Input label='BNB' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance3" onChange={this.handleInputChange}></Input><br></br>
+                        <Input label='XRP' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance4" onChange={this.handleInputChange}></Input><br></br>
+                        <Input label='ADA' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance5" onChange={this.handleInputChange}></Input><br></br>
+                        <Input label='DOT' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance6" onChange={this.handleInputChange}></Input><br></br>
+                        <Input label='TRX' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance7" onChange={this.handleInputChange}></Input><br></br>
+                        <Input label='CAKE' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance8" onChange={this.handleInputChange}></Input><br></br>
+                        <Input label='BCH' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance9" onChange={this.handleInputChange}></Input><br></br>
+                        <Input label='FIL' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance10" onChange={this.handleInputChange}></Input><br></br>
+                       
                         <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
                       </Form>
-
-                      <Table style={{ "margin-left": "auto", "margin-right": "auto" }} basic='very' celled collapsing>
-                        <Table.Header>
-                          <Table.Row>
-                            <Table.HeaderCell style={{ color: "white" }}>Token</Table.HeaderCell>
-                            <Table.HeaderCell style={{ color: "white" }}>Balance</Table.HeaderCell>
-                          </Table.Row>
-                        </Table.Header>
-
-                        <Table.Body>
-                          <Table.Row>
-                            <Table.Cell style={{ color: "#C0C0C0" }}>Top10 Token</Table.Cell>
-                            <Table.Cell style={{ color: "#C0C0C0" }}>{this.state.defiTokenBalanceMainnet}</Table.Cell>
-                          </Table.Row>
-
-                          <Table.Row>
-                            <Table.Cell style={{ color: "#C0C0C0" }}>Bitcoin</Table.Cell>
-                            <Table.Cell style={{ color: "#C0C0C0" }}>{this.state.btcPerc} %</Table.Cell>
-                          </Table.Row>
-
-                          <Table.Row>
-                            <Table.Cell style={{ color: "#C0C0C0" }}>Ethereum</Table.Cell>
-                            <Table.Cell style={{ color: "#C0C0C0" }}>{this.state.ethPerc} %</Table.Cell>
-                          </Table.Row>
-                        </Table.Body>
-                      </Table>
 
                     </Card.Description>
                   </Card.Content>
@@ -762,6 +739,7 @@ class App extends Component {
         {mainnet}
         
         {testnet}
+        <Button onClick={this.approveDeFiTokens} color="green" style={{ margin: "20px", width: "150px" }}>approve</Button>
       </div >
     );
   }
