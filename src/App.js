@@ -17,7 +17,7 @@ import 'semantic-ui-css/semantic.min.css';
 import velvet from "./velvet.png";
 import metamask from "./metamask-fox.svg";
 import swal from 'sweetalert';
-import ReactGA from 'react-ga';
+import ReactGA, { exception } from 'react-ga';
 
 import "./App.css";
 
@@ -566,17 +566,23 @@ class App extends Component {
   }
 
   rebalance = async() => {
-    let rebalance1 = this.state.rebalance1;
-    let rebalance2 = this.state.rebalance2;
-    let rebalance3 = this.state.rebalance3;
-    let rebalance4 = this.state.rebalance4;
-    let rebalance5 = this.state.rebalance5;
-    let rebalance6 = this.state.rebalance6;
-    let rebalance7 = this.state.rebalance7;
-    let rebalance8 = this.state.rebalance8;
-    let rebalance9 = this.state.rebalance9;
-    let rebalance10 = this.state.rebalance10;
+    let rebalance1 = this.state.rebalance1 * 100;
+    let rebalance2 = this.state.rebalance2 * 100;
+    let rebalance3 = this.state.rebalance3 * 100;
+    let rebalance4 = this.state.rebalance4 * 100;
+    let rebalance5 = this.state.rebalance5 * 100;
+    let rebalance6 = this.state.rebalance6 * 100;
+    let rebalance7 = this.state.rebalance7 * 100;
+    let rebalance8 = this.state.rebalance8 * 100;
+    let rebalance9 = this.state.rebalance9 * 100;
+    let rebalance10 = this.state.rebalance10 * 100;
+
     let rebalance = [rebalance1, rebalance2, rebalance3, rebalance4, rebalance5,rebalance6,rebalance7, rebalance8, rebalance9, rebalance10];
+    const sum = rebalance.reduce((a, b) => a + b, 0)
+    if(sum != 10000) {
+      swal("The sum has to be 100%!");
+      return;
+    }
     await this.state.SwapContract.methods.rebalance(rebalance).send({from: this.state.account});
   }
 
@@ -698,16 +704,16 @@ class App extends Component {
                     <Card.Description>
 
                       <Form onSubmit={this.rebalance}>
-                        <Input label='BTC' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance1" onChange={this.handleInputChange}></Input><br></br>
-                        <Input label='ETH' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance2" onChange={this.handleInputChange}></Input><br></br>
-                        <Input label='BNB' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance3" onChange={this.handleInputChange}></Input><br></br>
-                        <Input label='XRP' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance4" onChange={this.handleInputChange}></Input><br></br>
-                        <Input label='ADA' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance5" onChange={this.handleInputChange}></Input><br></br>
-                        <Input label='DOT' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance6" onChange={this.handleInputChange}></Input><br></br>
-                        <Input label='TRX' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance7" onChange={this.handleInputChange}></Input><br></br>
-                        <Input label='CAKE' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance8" onChange={this.handleInputChange}></Input><br></br>
-                        <Input label='BCH' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance9" onChange={this.handleInputChange}></Input><br></br>
-                        <Input label='FIL' style={{ width: "150px", padding: 3 }} required type="text" placeholder="1000 for 10%" name="rebalance10" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='BTC (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance1" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='ETH (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='BNB (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance3" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='XRP (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance4" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='ADA (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance5" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='DOT (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance6" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='TRX (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance7" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='CAKE (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance8" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='BCH (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance9" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='FIL (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance10" onChange={this.handleInputChange}></Input><br></br>
                        
                         <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
                       </Form>
