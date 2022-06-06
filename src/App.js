@@ -745,7 +745,6 @@ class App extends Component {
         {mainnet}
         
         {testnet}
-        <Button onClick={this.approveDeFiTokens} color="green" style={{ margin: "20px", width: "150px" }}>approve</Button>
       </div >
     );
   }
