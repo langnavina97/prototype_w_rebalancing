@@ -82,6 +82,8 @@ class App extends Component {
       NFTPortfolioContract: null,
 
       BluechipContract: null,
+      MetaContract: null,
+      Top10Contract: null,
 
       SwapContract2: null,
       NFTTokenContract2: null,
@@ -120,6 +122,21 @@ class App extends Component {
       rebalanceB3: 0,
       rebalanceB4: 0,
       rebalanceB5: 0,
+
+      rebalanceTOP101: 0,
+      rebalanceTOP102: 0,
+      rebalanceTOP103: 0,
+      rebalanceTOP104: 0,
+      rebalanceTOP105: 0,
+      rebalanceTOP106: 0,
+      rebalanceTOP107: 0,
+      rebalanceTOP108: 0,
+      rebalanceTOP109: 0,
+      rebalanceTOP1010: 0,
+
+      rebalanceM1: 0,
+      rebalanceM2: 0,
+      rebalanceM3: 0,
       
       ethPerc: 0,
       btcPerc: 0,
@@ -173,7 +190,9 @@ class App extends Component {
       const SwapContract = new web3.eth.Contract(IndexSwap.abi, "0x187b397599d81285a987466bD14790CF779B69E8");
       const BluechipContract = new web3.eth.Contract(IndexSwap.abi, "0x0eCc8ed9f1157d85E5e078BDc68B7C98eb8A251A");
       const NFTPortfolioContract = new web3.eth.Contract(NFTSwap.abi, "0x40A367c5320440a1aa78aCBC5af0A017Ed1F3772"); 
-      this.setState({ SwapContract, NFTPortfolioContract, BluechipContract});
+      const Top10Contract = new web3.eth.Contract(IndexSwap.abi, "0x2C338E6e014B0aC11Bc06E5cb571A2b12d020B39"); 
+      const MetaContract = new web3.eth.Contract(IndexSwap.abi, "0x9F00664f883dE5F67a71cAbA3059b6Caf345cB41"); 
+      this.setState({ SwapContract, NFTPortfolioContract, BluechipContract, Top10Contract, MetaContract});
     } else if (chainIdDec == "97") {
       const SwapContract2 = new web3.eth.Contract(IndexSwap2.abi, "0xCC645998E7240325690489FC33174063563aa322");
       const NFTPortfolioContract2 = new web3.eth.Contract(NFTSwap2.abi, "0xd7fE380362eD81E4a646A019e49e533ba49F4EFf");
@@ -611,6 +630,41 @@ class App extends Component {
     await this.state.BluechipContract.methods.rebalance(rebalance).send({from: this.state.account});
   }
 
+  rebalanceMeta = async() => {
+    let rebalance1 = this.state.rebalanceM1 * 100;
+    let rebalance2 = this.state.rebalanceM2 * 100;
+    let rebalance3 = this.state.rebalanceM3 * 100;
+
+    let rebalance = [rebalance1, rebalance2, rebalance3];
+    const sum = rebalance.reduce((a, b) => a + b, 0)
+    if(sum != 10000) {
+      swal("The sum has to be 100%!");
+      return;
+    }
+    await this.state.BluechipContract.methods.rebalance(rebalance).send({from: this.state.account});
+  }
+
+  rebalanceTOP10 = async() => {
+    let rebalance1 = this.state.rebalanceTOP101 * 100;
+    let rebalance2 = this.state.rebalanceTOP102 * 100;
+    let rebalance3 = this.state.rebalanceTOP103 * 100;
+    let rebalance4 = this.state.rebalanceTOP104 * 100;
+    let rebalance5 = this.state.rebalanceTOP105 * 100;
+    let rebalance6 = this.state.rebalanceTOP106 * 100;
+    let rebalance7 = this.state.rebalanceTOP107 * 100;
+    let rebalance8 = this.state.rebalanceTOP108 * 100;
+    let rebalance9 = this.state.rebalanceTOP109 * 100;
+    let rebalance10 = this.state.rebalanceTOP1010 * 100;
+
+    let rebalance = [rebalance1, rebalance2, rebalance3, rebalance4, rebalance5,rebalance6,rebalance7, rebalance8, rebalance9, rebalance10];
+    const sum = rebalance.reduce((a, b) => a + b, 0)
+    if(sum != 10000) {
+      swal("The sum has to be 100%!");
+      return;
+    }
+    await this.state.SwapContract.methods.rebalance(rebalance).send({from: this.state.account});
+  }
+
   render() {
 
     window.addEventListener("load", function() {
@@ -751,31 +805,85 @@ class App extends Component {
 
             <Grid.Column>
 
-              <Card.Group>
-                <Card style={{ width: "900px" }}>
-                  <Card.Content style={{ background: "#406ccd" }}>
-                    <Card.Header style={{ color: "white" }}>
-                      Blue Chip Portfolio - Asset Management
-                      </Card.Header>
-                    <Card.Description>
+            <Card.Group>
+              <Card style={{ width: "900px" }}>
+                <Card.Content style={{ background: "#406ccd" }}>
+                  <Card.Header style={{ color: "white" }}>
+                    TOP10 Portfolio - Asset Management
+                    </Card.Header>
+                  <Card.Description>
 
-                      <Form onSubmit={this.rebalanceBluechip}>
-                        <Input maxLength="5" label='BTC (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB1" onChange={this.handleInputChange}></Input><br></br>
-                        <Input maxLength="5" label='ETH (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB2" onChange={this.handleInputChange}></Input><br></br>
-                        <Input maxLength="5" label='XRP (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB3" onChange={this.handleInputChange}></Input><br></br>
-                        <Input maxLength="5" label='ADA (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB4" onChange={this.handleInputChange}></Input><br></br>
-                        <Input maxLength="5" label='WBNB (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB5" onChange={this.handleInputChange}></Input><br></br>
-                        
-                       
-                        <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
-                      </Form>
+                    <Form onSubmit={this.rebalanceTOP10}>
+                      <Input maxLength="5" label='BTC (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceTOP101" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <Input maxLength="5" label='ETH (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP102" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='XRP (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP103" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <Input maxLength="5" label='ADA (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP104" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='AVAX (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP105" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <Input maxLength="5" label='DOT (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP106" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='TRX (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP107" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <Input maxLength="5" label='DOGE (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP108" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='SOL (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP109" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <Input maxLength="5" label='WBNB (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP1010" onChange={this.handleInputChange}></Input><br></br>
+                    
+                      <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
+                    </Form>
 
-                    </Card.Description>
-                  </Card.Content>
-                </Card>
-              </Card.Group>
+                  </Card.Description>
+                </Card.Content>
+              </Card>
+            </Card.Group>
             </Grid.Column>
-          </Grid.Row>
+        
+            <Grid.Column>
+            <Card.Group>
+              <Card style={{ width: "900px" }}>
+                <Card.Content style={{ background: "#406ccd" }}>
+                  <Card.Header style={{ color: "white" }}>
+                    Blue Chip Portfolio - Asset Management
+                    </Card.Header>
+                  <Card.Description>
+
+                    <Form onSubmit={this.rebalanceBluechip}>
+                      <Input maxLength="5" label='BTC (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB1" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='ETH (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB2" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='XRP (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB3" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='ADA (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB4" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='WBNB (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB5" onChange={this.handleInputChange}></Input><br></br>
+                      
+                    
+                      <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
+                    </Form>
+
+                  </Card.Description>
+                </Card.Content>
+              </Card>
+            </Card.Group>
+            </Grid.Column>
+
+            <Grid.Column>
+            <Card.Group>
+              <Card style={{ width: "900px" }}>
+                <Card.Content style={{ background: "#406ccd" }}>
+                  <Card.Header style={{ color: "white" }}>
+                    META Portfolio - Asset Management
+                    </Card.Header>
+                  <Card.Description>
+
+                    <Form onSubmit={this.rebalanceMeta}>
+                      <Input maxLength="5" label='MANA (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceM1" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='SAND (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceM2" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='AXS (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceM3" onChange={this.handleInputChange}></Input><br></br>
+                      
+                    
+                      <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
+                    </Form>
+
+                  </Card.Description>
+                </Card.Content>
+              </Card>
+            </Card.Group>
+            </Grid.Column>
+            </Grid.Row>
         </Grid>
         </div>
       }
