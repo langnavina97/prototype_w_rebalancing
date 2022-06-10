@@ -81,6 +81,8 @@ class App extends Component {
       DeFiTokenContract: null,
       NFTPortfolioContract: null,
 
+      BluechipContract: null,
+
       SwapContract2: null,
       NFTTokenContract2: null,
       DeFiTokenContract2: null,
@@ -112,6 +114,12 @@ class App extends Component {
       rebalance8: 0,
       rebalance9: 0,
       rebalance10: 0,
+
+      rebalanceB1: 0,
+      rebalanceB2: 0,
+      rebalanceB3: 0,
+      rebalanceB4: 0,
+      rebalanceB5: 0,
       
       ethPerc: 0,
       btcPerc: 0,
@@ -163,8 +171,9 @@ class App extends Component {
     if(chainIdDec == "56") {
       this.setState({ account: accounts[0]}) 
       const SwapContract = new web3.eth.Contract(IndexSwap.abi, "0x187b397599d81285a987466bD14790CF779B69E8");
+      const BluechipContract = new web3.eth.Contract(IndexSwap.abi, "0x0eCc8ed9f1157d85E5e078BDc68B7C98eb8A251A");
       const NFTPortfolioContract = new web3.eth.Contract(NFTSwap.abi, "0x40A367c5320440a1aa78aCBC5af0A017Ed1F3772"); 
-      this.setState({ SwapContract, NFTPortfolioContract});
+      this.setState({ SwapContract, NFTPortfolioContract, BluechipContract});
     } else if (chainIdDec == "97") {
       const SwapContract2 = new web3.eth.Contract(IndexSwap2.abi, "0xCC645998E7240325690489FC33174063563aa322");
       const NFTPortfolioContract2 = new web3.eth.Contract(NFTSwap2.abi, "0xd7fE380362eD81E4a646A019e49e533ba49F4EFf");
@@ -586,6 +595,22 @@ class App extends Component {
     await this.state.SwapContract.methods.rebalance(rebalance).send({from: this.state.account});
   }
 
+  rebalanceBluechip = async() => {
+    let rebalance1 = this.state.rebalanceB1 * 100;
+    let rebalance2 = this.state.rebalanceB2 * 100;
+    let rebalance3 = this.state.rebalanceB3 * 100;
+    let rebalance4 = this.state.rebalanceB4 * 100;
+    let rebalance5 = this.state.rebalanceB5 * 100;
+
+    let rebalance = [rebalance1, rebalance2, rebalance3, rebalance4, rebalance5];
+    const sum = rebalance.reduce((a, b) => a + b, 0)
+    if(sum != 10000) {
+      swal("The sum has to be 100%!");
+      return;
+    }
+    await this.state.BluechipContract.methods.rebalance(rebalance).send({from: this.state.account});
+  }
+
   render() {
 
     window.addEventListener("load", function() {
@@ -699,7 +724,7 @@ class App extends Component {
                 <Card style={{ width: "900px" }}>
                   <Card.Content style={{ background: "#406ccd" }}>
                     <Card.Header style={{ color: "white" }}>
-                      Top 10 Venus - Asset Management
+                      Yield by Venus - Asset Management
                       </Card.Header>
                     <Card.Description>
 
@@ -714,6 +739,33 @@ class App extends Component {
                         <Input maxLength="5" label='CAKE (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance8" onChange={this.handleInputChange}></Input><br></br>
                         <Input maxLength="5" label='BCH (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance9" onChange={this.handleInputChange}></Input><br></br>
                         <Input maxLength="5" label='FIL (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance10" onChange={this.handleInputChange}></Input><br></br>
+                       
+                        <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
+                      </Form>
+
+                    </Card.Description>
+                  </Card.Content>
+                </Card>
+              </Card.Group>
+            </Grid.Column>
+
+            <Grid.Column>
+
+              <Card.Group>
+                <Card style={{ width: "900px" }}>
+                  <Card.Content style={{ background: "#406ccd" }}>
+                    <Card.Header style={{ color: "white" }}>
+                      Blue Chip Portfolio - Asset Management
+                      </Card.Header>
+                    <Card.Description>
+
+                      <Form onSubmit={this.rebalanceBluechip}>
+                        <Input maxLength="5" label='BTC (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB1" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='ETH (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB2" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='XRP (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB3" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='ADA (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB4" onChange={this.handleInputChange}></Input><br></br>
+                        <Input maxLength="5" label='WBNB (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceB5" onChange={this.handleInputChange}></Input><br></br>
+                        
                        
                         <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
                       </Form>
