@@ -539,8 +539,8 @@ class App extends Component {
 
 
                     <Form onSubmit={this.updateTokensBluechip}>
-                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Token List: [t1, t2, ..., tx]" name="tokensMeta" onChange={this.handleInputChange}></Input><br></br>
-                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Denorms: [d1, d2, ..., dx]" name="denormsMeta" onChange={this.handleInputChange}></Input><br></br>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Token List: [t1, t2, ..., tx]" name="tokensBluechip" onChange={this.handleInputChange}></Input><br></br>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Denorms: [d1, d2, ..., dx]" name="denormsBluechip" onChange={this.handleInputChange}></Input><br></br>
  
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Update Tokens</Button>
                     </Form>
@@ -570,8 +570,8 @@ class App extends Component {
                     </Form>
 
                     <Form onSubmit={this.updateTokensMeta}>
-                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Token List: [t1, t2, ..., tx]" name="tokensBluechip" onChange={this.handleInputChange}></Input><br></br>
-                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Denorms: [d1, d2, ..., dx]" name="denormsBluechip" onChange={this.handleInputChange}></Input><br></br>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Token List: [t1, t2, ..., tx]" name="tokensMeta" onChange={this.handleInputChange}></Input><br></br>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Denorms: [d1, d2, ..., dx]" name="denormsMeta" onChange={this.handleInputChange}></Input><br></br>
  
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Update Tokens</Button>
                     </Form>
