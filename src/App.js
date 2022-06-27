@@ -342,13 +342,11 @@ class App extends Component {
   updateTokensMeta = async() => {
     let tokenList = this.state.tokensMeta;
     let denorms = this.state.denormsMeta;
-    
-    const sum = denorms.reduce((a, b) => a + b, 0)
-    if(sum != 10000) {
-      swal("The sum has to be 100%!");
-      return;
-    }
-    await this.state.MetaContract.methods.updateTokens("0x3a82bDCD03D6FA973CA3384EbeD6FBa4257Bde61", tokenList, denorms).send({from: this.state.account});
+
+    let tokens = tokenList.split(",");
+    let denormList= denorms.split(",");
+
+    await this.state.MetaContract.methods.updateTokens("0x3a82bDCD03D6FA973CA3384EbeD6FBa4257Bde61", tokens, denormList).send({from: this.state.account});
   }
 
   rebalanceTOP10 = async() => {
@@ -375,13 +373,16 @@ class App extends Component {
   updateTokensTOP10 = async() => {
     let tokenList = this.state.tokensTOP10;
     let denorms = this.state.denormsTOP10;
+
+    let tokens = tokenList.split(",");
+    let denormList= denorms.split(",");
     
     const sum = denorms.reduce((a, b) => a + b, 0)
     if(sum != 10000) {
       swal("The sum has to be 100%!");
       return;
     }
-    await this.state.Top10Contract.methods.updateTokens("0x07725A4c539303872475021cE4Ec80B4ac7e9CA5", tokenList, denorms).send({from: this.state.account});
+    await this.state.Top10Contract.methods.updateTokens("0x07725A4c539303872475021cE4Ec80B4ac7e9CA5", tokens, denormList).send({from: this.state.account});
   }
 
   render() {
