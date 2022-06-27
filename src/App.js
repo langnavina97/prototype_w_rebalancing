@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 // Mainnet
 import IndexSwap from "./abis/IndexSwap.json";
+import Rebalancing from "./abis/Rebalancing.json";
 import NFTSwap from "./abis/NFTPortfolio.json";
 
 // Testnet
@@ -117,11 +118,17 @@ class App extends Component {
       rebalance9: 0,
       rebalance10: 0,
 
+      tokensVenus: [],
+      denormsVenus: [],
+
       rebalanceB1: 0,
       rebalanceB2: 0,
       rebalanceB3: 0,
       rebalanceB4: 0,
       rebalanceB5: 0,
+
+      tokensBluechip: [],
+      denormsBluechip: [],
 
       rebalanceTOP101: 0,
       rebalanceTOP102: 0,
@@ -134,9 +141,16 @@ class App extends Component {
       rebalanceTOP109: 0,
       rebalanceTOP1010: 0,
 
+      tokensTOP10: [],
+      denormsTOP10: [],
+
       rebalanceM1: 0,
       rebalanceM2: 0,
       rebalanceM3: 0,
+      rebalanceM4: 0,
+
+      tokensMeta: [],
+      denormsMeta: [],
       
       ethPerc: 0,
       btcPerc: 0,
@@ -156,11 +170,7 @@ class App extends Component {
 
     this.setState({chainId: chainIdDec})
 
-    if(chainIdDec == "97") {
-      await this.calcTokenBalances();
-    } else if(chainIdDec == "56") {
-      await this.calcTokenBalanceMainnet();
-    }
+   
   }
 
   // first up is to detect ethereum provider
@@ -187,11 +197,12 @@ class App extends Component {
     }
     if(chainIdDec == "56") {
       this.setState({ account: accounts[0]}) 
-      const SwapContract = new web3.eth.Contract(IndexSwap.abi, "0x187b397599d81285a987466bD14790CF779B69E8");
-      const BluechipContract = new web3.eth.Contract(IndexSwap.abi, "0x0eCc8ed9f1157d85E5e078BDc68B7C98eb8A251A");
       const NFTPortfolioContract = new web3.eth.Contract(NFTSwap.abi, "0x40A367c5320440a1aa78aCBC5af0A017Ed1F3772"); 
-      const Top10Contract = new web3.eth.Contract(IndexSwap.abi, "0x2C338E6e014B0aC11Bc06E5cb571A2b12d020B39"); 
-      const MetaContract = new web3.eth.Contract(IndexSwap.abi, "0x9F00664f883dE5F67a71cAbA3059b6Caf345cB41"); 
+
+      const SwapContract = new web3.eth.Contract(IndexSwap.abi, "0x187b397599d81285a987466bD14790CF779B69E8"); // Venus
+      const BluechipContract = new web3.eth.Contract(IndexSwap.abi, "0x0eCc8ed9f1157d85E5e078BDc68B7C98eb8A251A");
+      const Top10Contract = new web3.eth.Contract(Rebalancing.abi, "0x9099a9647Cff64684a1ebce0Eaad3d58097ba12E"); 
+      const MetaContract = new web3.eth.Contract(Rebalancing.abi, "0x3ecE79afa135d2c59cb5aC594C95353a17841DD3"); 
       this.setState({ SwapContract, NFTPortfolioContract, BluechipContract, Top10Contract, MetaContract});
     } else if (chainIdDec == "97") {
       const SwapContract2 = new web3.eth.Contract(IndexSwap2.abi, "0xCC645998E7240325690489FC33174063563aa322");
@@ -252,347 +263,6 @@ class App extends Component {
     window.location.reload();
   }
 
-  
-
-  investNFTMainnet = async () => {
-    const web3 = new Web3(window.ethereum);
-    const v = this.state.nftToMintMainnet;
-    const valueInWei = web3.utils.toWei(v.toString(), 'ether');
-    console.log(this.state.NFTPortfolioContract.methods);
-    
-    const resp = await this.state.NFTPortfolioContract.methods.investInFundNFT().send({ from: this.state.account, value: valueInWei.toString()
-    }).once("receipt", (receipt) => {
-      console.log(receipt);
-    })
-      .catch((err) => {
-        console.log(err);
-      });
-    if (resp.status) {
-      swal("Investment successfull!", `You invested ${v} BNB into the portfolio.`, "success");
-    } else {
-      swal("Investment failed!");
-    }
-  }
-
-  investDeFiMainnet = async () => {
-    const web3 = new Web3(window.ethereum);    
-    const v = this.state.defiToMintMainnet;
-    const valueInWei = web3.utils.toWei(v.toString(), 'ether');
-    
-    const resp = await this.state.SwapContract.methods.investInFund(valueInWei).send({ from: this.state.account, value: valueInWei.toString() })
-    .once("receipt", (receipt) => {
-      console.log(receipt);
-
-    })
-      .catch((err) => {
-        console.log(err);
-      });
-
-      if (resp.status) {
-        swal("Investment successfull!", `You invested ${v} BNB into the portfolio.`, "success");
-        //window.location.reload();
-      } else {
-        swal("Investment failed!");
-      }
-
-      await this.calcTokenBalanceMainnet();
-
-    }
-
-
-  approveNFTTokens = async() => {
-    const web3 = new Web3(window.ethereum);  
-    const contractAddress = "0xd7fE380362eD81E4a646A019e49e533ba49F4EFf";
-
-    const aXSTokenConntract = new web3.eth.Contract(IERC.abi, "0xf34D883EcdE3238B153f38230987a0F4c221a48F");
-    await aXSTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: "0xa05Ae01a56779a75FDBAa299965E0C1087E11cbc" });
-
-    const mANATokenConntract = new web3.eth.Contract(IERC.abi, "0x8bf2dF0Ff8528088475183a68678bd1Cd7691b69");
-    await mANATokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: "0xa05Ae01a56779a75FDBAa299965E0C1087E11cbc" });
-
-    const sANDTokenConntract = new web3.eth.Contract(IERC.abi, "0x1631A54AC95Ecb0085dB6b8ACf80c4Cee72AEB06");
-    await sANDTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: "0xa05Ae01a56779a75FDBAa299965E0C1087E11cbc" });
-
-    const tHETATokenConntract = new web3.eth.Contract(IERC.abi, "0x19A5E53eC7B385dbE2E587Ba989eA2AB8F7EaF1e");
-    await tHETATokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: "0xa05Ae01a56779a75FDBAa299965E0C1087E11cbc" });
-
-    const fLOWTokenConntract = new web3.eth.Contract(IERC.abi, "0xe5c48084E1974a971Bd5dF4d9B01daCCA86d5567");
-    await fLOWTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: "0xa05Ae01a56779a75FDBAa299965E0C1087E11cbc" });
-
-    const xTZTokenConntract = new web3.eth.Contract(IERC.abi, "0xC5De9d5B0BA5b408a3e9530A1BC310d8F2dCC26a");
-    await xTZTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: "0xa05Ae01a56779a75FDBAa299965E0C1087E11cbc" });
-
-    const gALATokenConntract = new web3.eth.Contract(IERC.abi, "0x4bf1CE8E4c4c86126E57Fa9fc3f1a9631661641c");
-    await gALATokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: "0xa05Ae01a56779a75FDBAa299965E0C1087E11cbc" });
-
-    const cHZTokenConntract = new web3.eth.Contract(IERC.abi, "0xdeEC6f0C22970b9b8a47069bE619bfAe646dEe26");
-    await cHZTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: "0xa05Ae01a56779a75FDBAa299965E0C1087E11cbc" });
-
-    const eNJTokenConntract = new web3.eth.Contract(IERC.abi, "0xb08A1959f57b9cC8e5A5F1d329EfD90EE3438F65");
-    await eNJTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: "0xa05Ae01a56779a75FDBAa299965E0C1087E11cbc" });
-
-    const rOSETokenConntract = new web3.eth.Contract(IERC.abi, "0x30c1AC77F4068A063648B549ffF96Ddb9d151325");
-    await rOSETokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: "0xa05Ae01a56779a75FDBAa299965E0C1087E11cbc" });
-  }
-
-  approveDeFiTokens = async() => {
-    const web3 = new Web3(window.ethereum);  
-    const contractAddress = "0x5DA92941262768deA5018114e64EB73b937B5Cb0";
-    const vault = "0x07C0737fdc21adf93200bd625cc70a66B835Cf8b";
-
-    const BTCTokenConntract = new web3.eth.Contract(IERC.abi, "0x8BaBbB98678facC7342735486C851ABD7A0d17Ca");
-    BTCTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
-
-    const ETHTokenConntract = new web3.eth.Contract(IERC.abi, "0x8a9424745056Eb399FD19a0EC26A14316684e274");
-    ETHTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
-
-    const SHIBATokenConntract = new web3.eth.Contract(IERC.abi, "0x4b1851167f74FF108A994872A160f1D6772d474b");
-    SHIBATokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
-
-    const XRPTokenConntract = new web3.eth.Contract(IERC.abi, "0xb7a58582Df45DBa8Ad346c6A51fdb796D64e0898");
-    XRPTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
-
-    const LTCTokenConntract = new web3.eth.Contract(IERC.abi, "0x62955C6cA8Cd74F8773927B880966B7e70aD4567");
-    LTCTokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
-
-    const DAITokenConntract = new web3.eth.Contract(IERC.abi, "0x2F9fd65E3BB89b68a8e2Abd68Db25F5C348F68Ee");
-    DAITokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
-
-    const LUNATokenConntract = new web3.eth.Contract(IERC.abi, "0x8D908A42FD847c80Eeb4498dE43469882436c8FF");
-    LUNATokenConntract.methods.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send({ from: vault });
-
-  }
-
-  withdrawDeFiMainnet = async () => {
-
-    const web3 = new Web3(window.ethereum);
-
-    var withdrawAmt = this.state.withdrawValueNFT;
-    var withdrawAmountInWei = web3.utils.toWei(withdrawAmt, 'ether');
-    var sAmount = withdrawAmountInWei.toString();
-
-    await this.state.SwapContract.methods.approve("0xA6eBa80EDFb7D78aD3b6d8Dc83f8a4ac37ef700a", "115792089237316195423570985008687907853269984665640564039457584007913129639935")
-    .send({from: this.state.account});
-
-    await this.state.SwapContract.methods.withdrawFromFundNew(sAmount
-    ).send({
-      from: this.state.account, value: 0
-    }).once("receipt", (receipt) => {
-      swal("Withdrawal successfull!", "The withdrawal was successful!", "success");
-      console.log(receipt);
-    })
-      .catch((err) => {
-        console.log(err);
-      });
-
-      await this.calcTokenBalanceMainnet();
-
-  }
-
-  withdrawNFTMainnet = async () => {
-      const vault = "0x75c9D3e17284D3AdA7F8B17E06DBE75a98353fF7";
-  
-      const web3 = new Web3(window.ethereum);
-  
-      console.log(this.state.DeFiTokenContract);
-  
-      var withdrawAmt = this.state.withdrawValueNFT;
-      var withdrawAmountInWei = web3.utils.toWei(withdrawAmt, 'ether');
-  
-  
-      await this.state.NFTTokenContract.methods.approve("0x40A367c5320440a1aa78aCBC5af0A017Ed1F3772", "7787357773333787487837458347754874574837458374")
-      .send({from: this.state.account});
-  
-      var amount = withdrawAmountInWei;
-      var sAmount = amount.toString();
-  
-      await this.state.NFTPortfolioContract.methods.withdrawFromFundNFT(sAmount
-      ).send({
-        from: this.state.account, value: 0
-      }).once("receipt", (receipt) => {
-        swal("Withdrawal successfull!", "The withdrawal was successful!", "success");
-        console.log(receipt);
-      })
-        .catch((err) => {
-          console.log(err);
-        });
-  }
-
-  getExchangeRateMainnet = async (amountIn, address) => {
-    const web3 = window.web3;
-    const pancakeRouter = new web3.eth.Contract(pancakeSwapRouter.abi, "0x10ED43C718714eb63d5aA57B78B54704E256024E");
-
-    var path = [];
-    path[0] = address;
-    path[1] = "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56";
-
-    const er = await pancakeRouter.methods.getAmountsOut(amountIn, path).call();
-    return er[1];
-  }
-
-  /*getRate = async () => {
-    const rateObj = await this.state.SwapContract.methods.currentRate().call();
-    const rate = rateObj.numerator / rateObj.denominator;
-    this.setState({ rate });
-  }*/
-
-
-  // TESTNET
-
-  investNFT = async () => {
-
-    const web3 = new Web3(window.ethereum);    
-    const v = this.state.defiToMint;
-    const valueInWei = web3.utils.toWei(v, 'ether');
-    
-    const resp = await this.state.NFTPortfolioContract2.methods.investInFund(valueInWei).send({ from: this.state.account, value: valueInWei })
-    .once("receipt", (receipt) => {
-      console.log(receipt);
-
-    })
-      .catch((err) => {
-        console.log(err);
-      });
-
-      if (resp.status) {
-        swal("Investment successfull!", `You invested ${v} BNB into the portfolio.`, "success");
-        //window.location.reload();
-      } else {
-        swal("Investment failed!");
-      }
-
-      await this.calcTokenBalances();
-
-  }
-
-  calcTokenBalances = async () => {
-    const web3 = new Web3(window.ethereum);
-    let defiTokenBalanceInWei = await this.state.SwapContract2.methods.balanceOf(this.state.account).call();
-    let defiTokenBalance = web3.utils.fromWei(defiTokenBalanceInWei, "ether");
-
-    let nftTokenBalanceInWei = await this.state.SwapContract2.methods.balanceOf(this.state.account).call();
-    let nftTokenBalance = web3.utils.fromWei(nftTokenBalanceInWei, "ether");
-
-    this.setState({ defiTokenBalance, nftTokenBalance });
-    
-  }
-
-  calcTokenBalanceMainnet = async () => {
-    const web3 = new Web3(window.ethereum);
-    let defiTokenBalanceInWei = await this.state.SwapContract.methods.balanceOf(this.state.account).call();
-    let defiTokenBalanceMainnet = web3.utils.fromWei(defiTokenBalanceInWei, "ether");
-
-    const tokenBalances = (await this.state.SwapContract.methods.getTokenAndVaultBalance().call())[0];
-    const vaultBalance = (await this.state.SwapContract.methods.getTokenAndVaultBalance().call())[1];
-
-    let btcPerc = tokenBalances[0] / vaultBalance;
-    let ethPerc = tokenBalances[1] / vaultBalance;
-
-    this.setState({ defiTokenBalanceMainnet, btcPerc, ethPerc });
-    
-  }
-
-  investDeFi = async () => {
-    const web3 = new Web3(window.ethereum);    
-    const v = this.state.defiToMint;
-    const valueInWei = web3.utils.toWei(v, 'ether');
-    
-    const resp = await this.state.SwapContract2.methods.investInFund(valueInWei).send({ from: this.state.account, value: valueInWei })
-    .once("receipt", (receipt) => {
-      console.log(receipt);
-
-    })
-      .catch((err) => {
-        console.log(err);
-      });
-
-      if (resp.status) {
-        swal("Investment successfull!", `You invested ${v} BNB into the portfolio.`, "success");
-        //window.location.reload();
-      } else {
-        swal("Investment failed!");
-      }
-
-      await this.calcTokenBalances();
-
-  }
-
-  withdrawDeFi = async () => {
-    const web3 = new Web3(window.ethereum);
-
-    var withdrawAmt = this.state.withdrawValueDefi;
-    var withdrawAmountInWei = web3.utils.toWei(withdrawAmt, 'ether');
-    var sAmount = withdrawAmountInWei.toString();
-
-    await this.state.SwapContract2.methods.approve("0xCC645998E7240325690489FC33174063563aa322", "115792089237316195423570985008687907853269984665640564039457584007913129639935")
-    .send({from: this.state.account});
-
-    await this.state.SwapContract2.methods.withdrawFromFundNew(sAmount
-    ).send({
-      from: this.state.account, value: 0
-    }).once("receipt", (receipt) => {
-      swal("Withdrawal successfull!", "The withdrawal was successful!", "success");
-      console.log(receipt);
-    })
-      .catch((err) => {
-        console.log(err);
-      });
-
-      await this.calcTokenBalances();
-
-  }
-  withdrawNFT = async () => {
-    const web3 = new Web3(window.ethereum);
-
-    var withdrawAmt = this.state.withdrawValueNFT;
-    var withdrawAmountInWei = web3.utils.toWei(withdrawAmt.toString(), 'ether');
-    var sAmount = withdrawAmountInWei.toString();
-
-    console.log(this.state.NFTPortfolioContract2);
-
-    await this.state.NFTPortfolioContract2.methods.approve("0xd7fE380362eD81E4a646A019e49e533ba49F4EFf", "115792089237316195423570985008687907853269984665640564039457584007913129639935")
-    .send({from: this.state.account});
-
-    await this.state.NFTPortfolioContract2.methods.withdrawFromFundNew(sAmount
-    ).send({
-      from: this.state.account, value: 0
-    }).once("receipt", (receipt) => {
-      swal("Withdrawal successfull!", "The withdrawal was successful!", "success");
-      console.log(receipt);
-    })
-      .catch((err) => {
-        console.log(err);
-      });
-
-  }
-
-  getExchangeRate = async (amountIn, address) => {
-    const web3 = window.web3;
-    const pancakeRouter = new web3.eth.Contract(pancakeSwapRouter.abi, "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3");
-
-    var path = [];
-    path[0] = address;
-    path[1] = "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd";
-
-    const er = await pancakeRouter.methods.getAmountsOut(amountIn, path).call();
-    return er[1];
-  }
-
-  init = async() => {
-    await this.state.SwapContract2.methods.initializeDefult().send({from: this.state.account});
-    await this.state.SwapContract2.methods.updateRate(1,1).send({from: this.state.account});
-  }
-
-  initMainnet = async() => {
-    await this.state.SwapContract.methods.initializeDefult().send({from: this.state.account});
-    await this.state.SwapContract.methods.updateRate(1,1).send({from: this.state.account});
-  }
-
-  initnft = async() => {
-    await this.state.NFTPortfolioContract2.methods.initializeDefult().send({from: this.state.account});
-    await this.state.NFTPortfolioContract2.methods.updateRate(1,1).send({from: this.state.account});
-  }
-
   rebalance = async() => {
     let rebalance1 = this.state.rebalance1 * 100;
     let rebalance2 = this.state.rebalance2 * 100;
@@ -614,6 +284,18 @@ class App extends Component {
     await this.state.SwapContract.methods.rebalance(rebalance).send({from: this.state.account});
   }
 
+  updateTokensVenus = async() => {
+    let tokenList = this.state.tokensVenus;
+    let denorms = this.state.denormsVenus;
+    
+    const sum = denorms.reduce((a, b) => a + b, 0)
+    if(sum != 10000) {
+      swal("The sum has to be 100%!");
+      return;
+    }
+    await this.state.SwapContract.methods.updateTokens(tokenList, denorms).send({from: this.state.account});
+  }
+
   rebalanceBluechip = async() => {
     let rebalance1 = this.state.rebalanceB1 * 100;
     let rebalance2 = this.state.rebalanceB2 * 100;
@@ -630,18 +312,43 @@ class App extends Component {
     await this.state.BluechipContract.methods.rebalance(rebalance).send({from: this.state.account});
   }
 
+  updateTokensBluechip = async() => {
+    let tokenList = this.state.tokensBluechip;
+    let denorms = this.state.denormsBluechip;
+    
+    const sum = denorms.reduce((a, b) => a + b, 0)
+    if(sum != 10000) {
+      swal("The sum has to be 100%!");
+      return;
+    }
+    await this.state.BluechipContract.methods.updateTokens(tokenList, denorms).send({from: this.state.account});
+  }
+
   rebalanceMeta = async() => {
     let rebalance1 = this.state.rebalanceM1 * 100;
     let rebalance2 = this.state.rebalanceM2 * 100;
     let rebalance3 = this.state.rebalanceM3 * 100;
+    let rebalance4 = this.state.rebalanceM4 * 100;
 
-    let rebalance = [rebalance1, rebalance2, rebalance3];
+    let rebalance = [rebalance1, rebalance2, rebalance3, rebalance4];
     const sum = rebalance.reduce((a, b) => a + b, 0)
     if(sum != 10000) {
       swal("The sum has to be 100%!");
       return;
     }
-    await this.state.BluechipContract.methods.rebalance(rebalance).send({from: this.state.account});
+    await this.state.MetaContract.methods.updateWeights("0x3a82bDCD03D6FA973CA3384EbeD6FBa4257Bde61", rebalance).send({from: this.state.account});
+  }
+
+  updateTokensMeta = async() => {
+    let tokenList = this.state.tokensMeta;
+    let denorms = this.state.denormsMeta;
+    
+    const sum = denorms.reduce((a, b) => a + b, 0)
+    if(sum != 10000) {
+      swal("The sum has to be 100%!");
+      return;
+    }
+    await this.state.MetaContract.methods.updateTokens("0x3a82bDCD03D6FA973CA3384EbeD6FBa4257Bde61", tokenList, denorms).send({from: this.state.account});
   }
 
   rebalanceTOP10 = async() => {
@@ -662,7 +369,19 @@ class App extends Component {
       swal("The sum has to be 100%!");
       return;
     }
-    await this.state.SwapContract.methods.rebalance(rebalance).send({from: this.state.account});
+    await this.state.Top10Contract.methods.updateWeights("0x07725A4c539303872475021cE4Ec80B4ac7e9CA5", rebalance).send({from: this.state.account});
+  }
+
+  updateTokensTOP10 = async() => {
+    let tokenList = this.state.tokensTOP10;
+    let denorms = this.state.denormsTOP10;
+    
+    const sum = denorms.reduce((a, b) => a + b, 0)
+    if(sum != 10000) {
+      swal("The sum has to be 100%!");
+      return;
+    }
+    await this.state.Top10Contract.methods.updateTokens("0x07725A4c539303872475021cE4Ec80B4ac7e9CA5", tokenList, denorms).send({from: this.state.account});
   }
 
   render() {
@@ -708,57 +427,7 @@ class App extends Component {
     }
 
     let testnet;
-    if(this.state.chainId == "97") {
-      testnet = <Grid divided='vertically'>
-        <Grid.Row columns={2} style={{ margin: "20px" }}>
-          <Grid.Column>
-            <Card.Group>
-              <Card style={{ width: "900px" }}>
-                <Card.Content style={{ background: "#406ccd" }}>
-                <Card.Header style={{ color: "white" }}>
-                  <p style={{ color: "#C0C0C0", "font-weight": "bold", "text-align": "right" }}>APY: XX%</p>
-                    Top 10 Tokens
-                    </Card.Header>
-                  <Card.Description>
-
-                  <Form onSubmit={this.investDeFi}>
-                      <Input style={{ width: "300px", padding: 3 }} required type="text" placeholder="BNB amount to create" name="defiToMint" onChange={this.handleInputChange}></Input>
-                      <Button color="green" type="submit" style={{ margin: "20px", width: "150px" }}>Create</Button>
-                    </Form>
-
-                    <Form onSubmit={this.withdrawDeFi}>
-                      <Input style={{ width: "300px", padding: 3 }} required type="text" placeholder="Top10 amount to redeem" name="withdrawValueDefi" onChange={this.handleInputChange}></Input>
-                      <Button color="green" style={{ margin: "20px", width: "150px" }}>Redeem</Button>
-                    </Form>
-
-                    <Table style={{ "margin-left": "auto", "margin-right": "auto" }} basic='very' celled collapsing>
-                        <Table.Header>
-                          <Table.Row>
-                            <Table.HeaderCell style={{ color: "white" }}>Token</Table.HeaderCell>
-                            <Table.HeaderCell style={{ color: "white" }}>Balance</Table.HeaderCell>
-                            <Table.HeaderCell style={{ color: "white" }}>Balance in USD</Table.HeaderCell>
-                          </Table.Row>
-                        </Table.Header>
-
-                        <Table.Body>
-                          <Table.Row>
-                            <Table.Cell style={{ color: "#C0C0C0" }}>Top10 Token</Table.Cell>
-                            <Table.Cell style={{ color: "#C0C0C0" }}>{this.state.defiTokenBalance}</Table.Cell>
-                            <Table.Cell style={{ color: "#C0C0C0" }}>-</Table.Cell>
-                          </Table.Row>
-                        </Table.Body>
-                    </Table>
-
-                  </Card.Description>
-                </Card.Content>
-              </Card>
-            </Card.Group>
-          </Grid.Column>
-
-        </Grid.Row>
-      </Grid>
-    }
-
+   
       let buttonSwitch;
       if(this.state.chainId == "56" && this.state.connected) {
         buttonSwitch = <Button style={{ position: "absolute", top: "60px", right: "20px" }} onClick={() => this.handleNetworkSwitch("bscTestnet")} color="orange" type="submit" >Change to Testnet</Button>
@@ -797,6 +466,13 @@ class App extends Component {
                         <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
                       </Form>
 
+                      <Form onSubmit={this.updateTokensVenus}>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Token List: [t1, t2, ..., tx]" name="tokensVenus" onChange={this.handleInputChange}></Input><br></br>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Denorms: [d1, d2, ..., dx]" name="denormsVenus" onChange={this.handleInputChange}></Input><br></br>
+ 
+                      <Button color="green" style={{ margin: "20px", width: "150px" }}>Update Tokens</Button>
+                    </Form>
+
                     </Card.Description>
                   </Card.Content>
                 </Card>
@@ -828,6 +504,13 @@ class App extends Component {
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
                     </Form>
 
+                    <Form onSubmit={this.updateTokensTOP10}>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Token List: [t1, t2, ..., tx]" name="tokensTOP10" onChange={this.handleInputChange}></Input><br></br>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Denorms: [d1, d2, ..., dx]" name="denormsTOP10" onChange={this.handleInputChange}></Input><br></br>
+ 
+                      <Button color="green" style={{ margin: "20px", width: "150px" }}>Update Tokens</Button>
+                    </Form>
+
                   </Card.Description>
                 </Card.Content>
               </Card>
@@ -854,6 +537,14 @@ class App extends Component {
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
                     </Form>
 
+
+                    <Form onSubmit={this.updateTokensBluechip}>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Token List: [t1, t2, ..., tx]" name="tokensMeta" onChange={this.handleInputChange}></Input><br></br>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Denorms: [d1, d2, ..., dx]" name="denormsMeta" onChange={this.handleInputChange}></Input><br></br>
+ 
+                      <Button color="green" style={{ margin: "20px", width: "150px" }}>Update Tokens</Button>
+                    </Form>
+
                   </Card.Description>
                 </Card.Content>
               </Card>
@@ -873,9 +564,16 @@ class App extends Component {
                       <Input maxLength="5" label='MANA (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceM1" onChange={this.handleInputChange}></Input><br></br>
                       <Input maxLength="5" label='SAND (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceM2" onChange={this.handleInputChange}></Input><br></br>
                       <Input maxLength="5" label='AXS (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceM3" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='BAKE (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceM4" onChange={this.handleInputChange}></Input><br></br>
                       
-                    
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
+                    </Form>
+
+                    <Form onSubmit={this.updateTokensMeta}>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Token List: [t1, t2, ..., tx]" name="tokensBluechip" onChange={this.handleInputChange}></Input><br></br>
+                      <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Denorms: [d1, d2, ..., dx]" name="denormsBluechip" onChange={this.handleInputChange}></Input><br></br>
+ 
+                      <Button color="green" style={{ margin: "20px", width: "150px" }}>Update Tokens</Button>
                     </Form>
 
                   </Card.Description>
