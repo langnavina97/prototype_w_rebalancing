@@ -277,11 +277,12 @@ class App extends Component {
 
     let rebalance = [rebalance1, rebalance2, rebalance3, rebalance4, rebalance5,rebalance6,rebalance7, rebalance8, rebalance9, rebalance10];
     const sum = rebalance.reduce((a, b) => a + b, 0)
+    console.log(sum);
     if(sum != 10000) {
       swal("The sum has to be 100%!");
       return;
     }
-    await this.state.SwapContract.methods.rebalance(rebalance).send({from: this.state.account});
+    //await this.state.SwapContract.methods.rebalance(rebalance).send({from: this.state.account});
   }
 
   updateTokensVenus = async() => {
@@ -363,6 +364,7 @@ class App extends Component {
 
     let rebalance = [rebalance1, rebalance2, rebalance3, rebalance4, rebalance5,rebalance6,rebalance7, rebalance8, rebalance9, rebalance10];
     const sum = rebalance.reduce((a, b) => a + b, 0)
+    console.log(sum);
     if(sum != 10000) {
       swal("The sum has to be 100%!");
       return;
@@ -492,15 +494,15 @@ class App extends Component {
 
                     <Form onSubmit={this.rebalanceTOP10}>
                       <Input maxLength="5" label='BTC (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceTOP101" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <Input maxLength="5" label='ETH (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP102" onChange={this.handleInputChange}></Input><br></br>
-                      <Input maxLength="5" label='XRP (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP103" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <Input maxLength="5" label='ADA (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP104" onChange={this.handleInputChange}></Input><br></br>
-                      <Input maxLength="5" label='AVAX (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP105" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <Input maxLength="5" label='DOT (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP106" onChange={this.handleInputChange}></Input><br></br>
-                      <Input maxLength="5" label='TRX (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP107" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <Input maxLength="5" label='DOGE (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP108" onChange={this.handleInputChange}></Input><br></br>
-                      <Input maxLength="5" label='SOL (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP109" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      <Input maxLength="5" label='WBNB (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2TOP1010" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='ETH (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceTOP102" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='XRP (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceTOP103" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <Input maxLength="5" label='ADA (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceTOP104" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='AVAX (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceTOP105" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <Input maxLength="5" label='DOT (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceTOP106" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='TRX (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceTOP107" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <Input maxLength="5" label='DOGE (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceTOP108" onChange={this.handleInputChange}></Input><br></br>
+                      <Input maxLength="5" label='SOL (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceTOP109" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <Input maxLength="5" label='WBNB (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalanceTOP1010" onChange={this.handleInputChange}></Input><br></br>
                     
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
                     </Form>
