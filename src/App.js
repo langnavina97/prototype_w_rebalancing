@@ -199,7 +199,7 @@ class App extends Component {
       this.setState({ account: accounts[0]}) 
       const NFTPortfolioContract = new web3.eth.Contract(NFTSwap.abi, "0x40A367c5320440a1aa78aCBC5af0A017Ed1F3772"); 
 
-      const SwapContract = new web3.eth.Contract(IndexSwap.abi, "0x187b397599d81285a987466bD14790CF779B69E8"); // Venus
+      const SwapContract = new web3.eth.Contract(Rebalancing.abi, "0xd94B17e2A238b69b15481105AB7F59C7B24185f8"); // Venus
       const BluechipContract = new web3.eth.Contract(IndexSwap.abi, "0x0eCc8ed9f1157d85E5e078BDc68B7C98eb8A251A");
       const Top10Contract = new web3.eth.Contract(Rebalancing.abi, "0x9099a9647Cff64684a1ebce0Eaad3d58097ba12E"); 
       const MetaContract = new web3.eth.Contract(Rebalancing.abi, "0x3ecE79afa135d2c59cb5aC594C95353a17841DD3"); 
@@ -282,19 +282,25 @@ class App extends Component {
       swal("The sum has to be 100%!");
       return;
     }
-    //await this.state.SwapContract.methods.rebalance(rebalance).send({from: this.state.account});
+    await this.state.SwapContract.methods.updateWeights("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", rebalance).send({from: this.state.account});
   }
 
   updateTokensVenus = async() => {
     let tokenList = this.state.tokensVenus;
     let denorms = this.state.denormsVenus;
     
-    const sum = denorms.reduce((a, b) => a + b, 0)
-    if(sum != 10000) {
-      swal("The sum has to be 100%!");
-      return;
-    }
-    await this.state.SwapContract.methods.updateTokens(tokenList, denorms).send({from: this.state.account});
+    let tokens = tokenList.split(",");
+    let denormList= denorms.split(",");
+
+    await this.state.SwapContract.methods.updateTokens("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", tokens, denormList).send({from: this.state.account});
+  }
+
+  pauseVenus = async() => {
+    await this.state.SwapContract.methods.setPause("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", true);
+  }
+
+  unpauseVenus = async() => {
+    await this.state.SwapContract.methods.setPause("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", false);
   }
 
   rebalanceBluechip = async() => {
@@ -317,11 +323,9 @@ class App extends Component {
     let tokenList = this.state.tokensBluechip;
     let denorms = this.state.denormsBluechip;
     
-    const sum = denorms.reduce((a, b) => a + b, 0)
-    if(sum != 10000) {
-      swal("The sum has to be 100%!");
-      return;
-    }
+    let tokens = tokenList.split(",");
+    let denormList= denorms.split(",");
+
     await this.state.BluechipContract.methods.updateTokens(tokenList, denorms).send({from: this.state.account});
   }
 
@@ -415,9 +419,18 @@ class App extends Component {
           new Web3.providers.HttpProvider("http://127.0.0.1:7545"),
         );
       }
+
+     
     });
 
     const web3 = window.web3;
+
+    const VenusContract = new web3.eth.Contract(IndexSwap.abi, "0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4");
+    let venusPausable;
+    if(VenusContract.paused()) {
+     venusPausable = <Button onClick={this.unpauseVenus}>Unpause</Button>;
+    } else {
+    venusPausable = <Button onClick={this.pauseVenus}>Pause</Button>;}
 
     let button;
     if (!this.state.connected) {
@@ -475,6 +488,11 @@ class App extends Component {
  
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Update Tokens</Button>
                     </Form>
+
+                    <Button color="green" style={{ margin: "20px", width: "150px" }}>Pause</Button>
+                    <Button color="green" style={{ margin: "20px", width: "150px" }}>Unpause</Button>
+
+                    {venusPausable}
 
                     </Card.Description>
                   </Card.Content>
