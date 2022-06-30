@@ -78,6 +78,7 @@ class App extends Component {
       
       account: '',
       SwapContract: null,
+      VenusContract: null,
       NFTTokenContract: null,
       DeFiTokenContract: null,
       NFTPortfolioContract: null,
@@ -200,10 +201,11 @@ class App extends Component {
       const NFTPortfolioContract = new web3.eth.Contract(NFTSwap.abi, "0x40A367c5320440a1aa78aCBC5af0A017Ed1F3772"); 
 
       const SwapContract = new web3.eth.Contract(Rebalancing.abi, "0xd94B17e2A238b69b15481105AB7F59C7B24185f8"); // Venus
+      const VenusContract = new web3.eth.Contract(IndexSwap.abi, "0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4");
       const BluechipContract = new web3.eth.Contract(IndexSwap.abi, "0x0eCc8ed9f1157d85E5e078BDc68B7C98eb8A251A");
       const Top10Contract = new web3.eth.Contract(Rebalancing.abi, "0x9099a9647Cff64684a1ebce0Eaad3d58097ba12E"); 
       const MetaContract = new web3.eth.Contract(Rebalancing.abi, "0x3ecE79afa135d2c59cb5aC594C95353a17841DD3"); 
-      this.setState({ SwapContract, NFTPortfolioContract, BluechipContract, Top10Contract, MetaContract});
+      this.setState({ SwapContract, NFTPortfolioContract, BluechipContract, Top10Contract, MetaContract, VenusContract});
     } else if (chainIdDec == "97") {
       const SwapContract2 = new web3.eth.Contract(IndexSwap2.abi, "0xCC645998E7240325690489FC33174063563aa322");
       const NFTPortfolioContract2 = new web3.eth.Contract(NFTSwap2.abi, "0xd7fE380362eD81E4a646A019e49e533ba49F4EFf");
@@ -296,11 +298,11 @@ class App extends Component {
   }
 
   pauseVenus = async() => {
-    await this.state.SwapContract.methods.setPause("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", true);
+    await this.state.SwapContract.methods.setPause("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", true).send({from: this.state.account});
   }
 
   unpauseVenus = async() => {
-    await this.state.SwapContract.methods.setPause("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", false);
+    await this.state.SwapContract.methods.setPause("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", false).send({from: this.state.account});
   }
 
   rebalanceBluechip = async() => {
@@ -425,13 +427,6 @@ class App extends Component {
 
     const web3 = window.web3;
 
-    const VenusContract = new web3.eth.Contract(IndexSwap.abi, "0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4");
-    let venusPausable;
-    if(VenusContract.paused()) {
-     venusPausable = <Button onClick={this.unpauseVenus}>Unpause</Button>;
-    } else {
-    venusPausable = <Button onClick={this.pauseVenus}>Pause</Button>;}
-
     let button;
     if (!this.state.connected) {
       button = <Button style={{ position: "absolute", top: "60px", right: "20px" }} onClick={this.connectWallet} color="orange">
@@ -489,10 +484,8 @@ class App extends Component {
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Update Tokens</Button>
                     </Form>
 
-                    <Button color="green" style={{ margin: "20px", width: "150px" }}>Pause</Button>
-                    <Button color="green" style={{ margin: "20px", width: "150px" }}>Unpause</Button>
-
-                    {venusPausable}
+                    <Button onClick={this.pauseVenus} color="green" style={{ margin: "20px", width: "150px" }}>Pause</Button>
+                    <Button onClick={this.unpauseVenus} color="green" style={{ margin: "20px", width: "150px" }}>Unpause</Button>
 
                     </Card.Description>
                   </Card.Content>
