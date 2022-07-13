@@ -77,7 +77,7 @@ class App extends Component {
     this.state = {
       
       account: '',
-      SwapContract: null,
+      RebalanceVenus: null,
       VenusContract: null,
       NFTTokenContract: null,
       DeFiTokenContract: null,
@@ -86,11 +86,6 @@ class App extends Component {
       BluechipContract: null,
       MetaContract: null,
       Top10Contract: null,
-
-      SwapContract2: null,
-      NFTTokenContract2: null,
-      DeFiTokenContract2: null,
-      NFTPortfolioContract2: null,
 
       address: "",
       connected: false,
@@ -200,17 +195,20 @@ class App extends Component {
       this.setState({ account: accounts[0]}) 
       const NFTPortfolioContract = new web3.eth.Contract(NFTSwap.abi, "0x40A367c5320440a1aa78aCBC5af0A017Ed1F3772"); 
 
-      const SwapContract = new web3.eth.Contract(Rebalancing.abi, "0xd94B17e2A238b69b15481105AB7F59C7B24185f8"); // Venus
-      const VenusContract = new web3.eth.Contract(IndexSwap.abi, "0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4");
-      const BluechipContract = new web3.eth.Contract(IndexSwap.abi, "0x0eCc8ed9f1157d85E5e078BDc68B7C98eb8A251A");
-      const Top10Contract = new web3.eth.Contract(Rebalancing.abi, "0x9099a9647Cff64684a1ebce0Eaad3d58097ba12E"); 
-      const MetaContract = new web3.eth.Contract(Rebalancing.abi, "0x3ecE79afa135d2c59cb5aC594C95353a17841DD3"); 
-      this.setState({ SwapContract, NFTPortfolioContract, BluechipContract, Top10Contract, MetaContract, VenusContract});
-    } else if (chainIdDec == "97") {
-      const SwapContract2 = new web3.eth.Contract(IndexSwap2.abi, "0xCC645998E7240325690489FC33174063563aa322");
-      const NFTPortfolioContract2 = new web3.eth.Contract(NFTSwap2.abi, "0xd7fE380362eD81E4a646A019e49e533ba49F4EFf");
-      this.setState({ SwapContract2, NFTPortfolioContract2});
-    }
+      const RebalanceVenus = new web3.eth.Contract(Rebalancing.abi, "0x4198530f637fEA7e6F70BE0cc2e4707725aa8c84"); // Venus
+      const VenusContract = new web3.eth.Contract(IndexSwap.abi, "0xaCA0cd1E0aD9F049a07d32f8A017D7043CAe1c2C");
+
+      const RebalanceBLUE = new web3.eth.Contract(Rebalancing.abi, ""); 
+      const BluechipContract = new web3.eth.Contract(IndexSwap.abi, "");
+
+      const RebalanceTOP10 = new web3.eth.Contract(Rebalancing.abi, ""); 
+      const Top10Contract = new web3.eth.Contract(Rebalancing.abi, ""); 
+
+      const RebalanceMETA = new web3.eth.Contract(Rebalancing.abi, ""); 
+      const MetaContract = new web3.eth.Contract(Rebalancing.abi, ""); 
+      
+      this.setState({ RebalanceVenus, NFTPortfolioContract, BluechipContract, Top10Contract, MetaContract, VenusContract});
+    } 
   }
 
     async changeNetwork (networkName) {
@@ -265,7 +263,7 @@ class App extends Component {
     window.location.reload();
   }
 
-  rebalance = async() => {
+  rebalanceVenus = async() => {
     let rebalance1 = this.state.rebalance1 * 100;
     let rebalance2 = this.state.rebalance2 * 100;
     let rebalance3 = this.state.rebalance3 * 100;
@@ -284,7 +282,7 @@ class App extends Component {
       swal("The sum has to be 100%!");
       return;
     }
-    await this.state.SwapContract.methods.updateWeights("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", rebalance).send({from: this.state.account});
+    await this.state.RebalanceVenus.methods.updateWeights(rebalance).send({from: this.state.account});
   }
 
   updateTokensVenus = async() => {
@@ -294,15 +292,19 @@ class App extends Component {
     let tokens = tokenList.split(",");
     let denormList= denorms.split(",");
 
-    await this.state.SwapContract.methods.updateTokens("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", tokens, denormList).send({from: this.state.account});
+    await this.state.RebalanceVenus.methods.updateTokens(tokens, denormList).send({from: this.state.account});
   }
 
   pauseVenus = async() => {
-    await this.state.SwapContract.methods.setPause("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", true).send({from: this.state.account});
+    await this.state.RebalanceVenus.methods.setPause(true).send({from: this.state.account});
   }
 
   unpauseVenus = async() => {
-    await this.state.SwapContract.methods.setPause("0x7E323655a09d3bA63198ADf5462FC1fa0Fb1a1F4", false).send({from: this.state.account});
+    await this.state.RebalanceVenus.methods.setPause(false).send({from: this.state.account});
+  }
+
+  chargeFeeVenus = async() => {
+    await this.state.RebalanceVenus.methods.feeModule().send({from: this.state.account});
   }
 
   rebalanceBluechip = async() => {
@@ -318,7 +320,7 @@ class App extends Component {
       swal("The sum has to be 100%!");
       return;
     }
-    await this.state.BluechipContract.methods.rebalance(rebalance).send({from: this.state.account});
+    await this.state.RebalanceBLUE.methods.updateWeights(rebalance).send({from: this.state.account});
   }
 
   updateTokensBluechip = async() => {
@@ -328,7 +330,19 @@ class App extends Component {
     let tokens = tokenList.split(",");
     let denormList= denorms.split(",");
 
-    await this.state.BluechipContract.methods.updateTokens(tokenList, denorms).send({from: this.state.account});
+    await this.state.RebalanceBLUE.methods.updateTokens(tokens, denormList).send({from: this.state.account});
+  }
+
+  pauseBlue = async() => {
+    await this.state.RebalanceBLUE.methods.setPause(true).send({from: this.state.account});
+  }
+
+  unpauseBlue = async() => {
+    await this.state.RebalanceBLUE.methods.setPause(false).send({from: this.state.account});
+  }
+
+  chargeFeeBlue = async() => {
+    await this.state.RebalanceBLUE.methods.feeModule().send({from: this.state.account});
   }
 
   rebalanceMeta = async() => {
@@ -343,7 +357,7 @@ class App extends Component {
       swal("The sum has to be 100%!");
       return;
     }
-    await this.state.MetaContract.methods.updateWeights("0x3a82bDCD03D6FA973CA3384EbeD6FBa4257Bde61", rebalance).send({from: this.state.account});
+    await this.state.MetaContract.methods.updateWeights(rebalance).send({from: this.state.account});
   }
 
   updateTokensMeta = async() => {
@@ -353,7 +367,19 @@ class App extends Component {
     let tokens = tokenList.split(",");
     let denormList= denorms.split(",");
 
-    await this.state.MetaContract.methods.updateTokens("0x3a82bDCD03D6FA973CA3384EbeD6FBa4257Bde61", tokens, denormList).send({from: this.state.account});
+    await this.state.RebalanceMETA.methods.updateTokens(tokens, denormList).send({from: this.state.account});
+  }
+
+  pauseMeta = async() => {
+    await this.state.RebalanceMETA.methods.setPause(true).send({from: this.state.account});
+  }
+
+  unpauseMeta = async() => {
+    await this.state.RebalanceMETA.methods.setPause(false).send({from: this.state.account});
+  }
+
+  chargeFeeMeta = async() => {
+    await this.state.RebalanceMETA.methods.feeModule().send({from: this.state.account});
   }
 
   rebalanceTOP10 = async() => {
@@ -375,7 +401,7 @@ class App extends Component {
       swal("The sum has to be 100%!");
       return;
     }
-    await this.state.Top10Contract.methods.updateWeights("0x07725A4c539303872475021cE4Ec80B4ac7e9CA5", rebalance).send({from: this.state.account});
+    await this.state.Top10Contract.methods.updateWeights(rebalance).send({from: this.state.account});
   }
 
   updateTokensTOP10 = async() => {
@@ -384,13 +410,20 @@ class App extends Component {
 
     let tokens = tokenList.split(",");
     let denormList= denorms.split(",");
-    
-    const sum = denorms.reduce((a, b) => a + b, 0)
-    if(sum != 10000) {
-      swal("The sum has to be 100%!");
-      return;
-    }
-    await this.state.Top10Contract.methods.updateTokens("0x07725A4c539303872475021cE4Ec80B4ac7e9CA5", tokens, denormList).send({from: this.state.account});
+
+    await this.state.RebalanceTOP10.methods.updateTokens(tokens, denormList).send({from: this.state.account});
+  }
+
+  pauseTOP10 = async() => {
+    await this.state.RebalanceTOP10.methods.setPause(true).send({from: this.state.account});
+  }
+
+  unpauseTOP10= async() => {
+    await this.state.RebalanceTOP10.methods.setPause(false).send({from: this.state.account});
+  }
+
+  chargeFeeTOP10 = async() => {
+    await this.state.RebalanceTOP10.methods.feeModule().send({from: this.state.account});
   }
 
   render() {
@@ -462,7 +495,7 @@ class App extends Component {
                       </Card.Header>
                     <Card.Description>
 
-                      <Form onSubmit={this.rebalance}>
+                      <Form onSubmit={this.rebalanceVenus}>
                         <Input maxLength="5" label='BTC (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance1" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <Input maxLength="5" label='ETH (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance2" onChange={this.handleInputChange}></Input><br></br>
                         <Input maxLength="5" label='BNB (%)' style={{ width: "150px", padding: 3 }} required type="text" placeholder="%" name="rebalance3" onChange={this.handleInputChange}></Input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -486,6 +519,10 @@ class App extends Component {
 
                     <Button onClick={this.pauseVenus} color="green" style={{ margin: "20px", width: "150px" }}>Pause</Button>
                     <Button onClick={this.unpauseVenus} color="green" style={{ margin: "20px", width: "150px" }}>Unpause</Button>
+
+                    <Button onClick={this.chargeFeeVenus} color="green" style={{ margin: "20px", width: "150px" }}>Charge Fee</Button>
+
+                    
 
                     </Card.Description>
                   </Card.Content>
@@ -525,6 +562,11 @@ class App extends Component {
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Update Tokens</Button>
                     </Form>
 
+                    <Button onClick={this.pauseTOP10} color="green" style={{ margin: "20px", width: "150px" }}>Pause</Button>
+                    <Button onClick={this.unpauseTOP10} color="green" style={{ margin: "20px", width: "150px" }}>Unpause</Button>
+
+                    <Button onClick={this.chargeFeeTOP10} color="green" style={{ margin: "20px", width: "150px" }}>Charge Fee</Button>
+
                   </Card.Description>
                 </Card.Content>
               </Card>
@@ -551,13 +593,17 @@ class App extends Component {
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Rebalance</Button>
                     </Form>
 
-
                     <Form onSubmit={this.updateTokensBluechip}>
                       <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Token List: [t1, t2, ..., tx]" name="tokensBluechip" onChange={this.handleInputChange}></Input><br></br>
                       <Input style={{ width: "600px", padding: 3 }} required type="text" placeholder="Denorms: [d1, d2, ..., dx]" name="denormsBluechip" onChange={this.handleInputChange}></Input><br></br>
  
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Update Tokens</Button>
                     </Form>
+
+                    <Button onClick={this.pauseBlue} color="green" style={{ margin: "20px", width: "150px" }}>Pause</Button>
+                    <Button onClick={this.unpauseBlue} color="green" style={{ margin: "20px", width: "150px" }}>Unpause</Button>
+
+                    <Button onClick={this.chargeFeeBlue} color="green" style={{ margin: "20px", width: "150px" }}>Charge Fee</Button>
 
                   </Card.Description>
                 </Card.Content>
@@ -589,6 +635,11 @@ class App extends Component {
  
                       <Button color="green" style={{ margin: "20px", width: "150px" }}>Update Tokens</Button>
                     </Form>
+
+                    <Button onClick={this.pauseMeta} color="green" style={{ margin: "20px", width: "150px" }}>Pause</Button>
+                    <Button onClick={this.unpauseMeta} color="green" style={{ margin: "20px", width: "150px" }}>Unpause</Button>
+
+                    <Button onClick={this.chargeFeeMeta} color="green" style={{ margin: "20px", width: "150px" }}>Charge Fee</Button>
 
                   </Card.Description>
                 </Card.Content>
