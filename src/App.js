@@ -77,15 +77,22 @@ class App extends Component {
     this.state = {
       
       account: '',
+
       RebalanceVenus: null,
       VenusContract: null,
+
       NFTTokenContract: null,
       DeFiTokenContract: null,
       NFTPortfolioContract: null,
 
       BluechipContract: null,
+      RebalanceBLUE: null, 
+
       MetaContract: null,
+      RebalanceMETA: null,
+
       Top10Contract: null,
+      RebalanceTOP10: null,
 
       address: "",
       connected: false,
@@ -198,16 +205,17 @@ class App extends Component {
       const RebalanceVenus = new web3.eth.Contract(Rebalancing.abi, "0x4198530f637fEA7e6F70BE0cc2e4707725aa8c84"); // Venus
       const VenusContract = new web3.eth.Contract(IndexSwap.abi, "0xaCA0cd1E0aD9F049a07d32f8A017D7043CAe1c2C");
 
-      const RebalanceBLUE = new web3.eth.Contract(Rebalancing.abi, ""); 
-      const BluechipContract = new web3.eth.Contract(IndexSwap.abi, "");
+      const RebalanceBLUE = new web3.eth.Contract(Rebalancing.abi, "0x8396b811E3a262CA65B45e0aE0703BAFCE1744dB"); 
+      const BluechipContract = new web3.eth.Contract(IndexSwap.abi, "0x8E2bDe9089f1838C4176e8bbC32Da5F11801C053");
 
-      const RebalanceTOP10 = new web3.eth.Contract(Rebalancing.abi, ""); 
-      const Top10Contract = new web3.eth.Contract(Rebalancing.abi, ""); 
+      const RebalanceTOP10 = new web3.eth.Contract(Rebalancing.abi, "0xb9Cd6CD233d60011DC51c680A0C1c69CfD01A21f"); 
+      const Top10Contract = new web3.eth.Contract(IndexSwap.abi, "0xF3D3aA1da8dd835e7ec1B05784E08f872F7c4869"); 
 
-      const RebalanceMETA = new web3.eth.Contract(Rebalancing.abi, ""); 
-      const MetaContract = new web3.eth.Contract(Rebalancing.abi, ""); 
+      const RebalanceMETA = new web3.eth.Contract(Rebalancing.abi, "0xA4Fb067e8509B64A4d099431e3f26f5593109d50"); 
+      const MetaContract = new web3.eth.Contract(IndexSwap.abi, "0x5331a330A64d0a73ddBB9eD787AC71DE1cb736e1"); 
       
-      this.setState({ RebalanceVenus, NFTPortfolioContract, BluechipContract, Top10Contract, MetaContract, VenusContract});
+      this.setState({ RebalanceVenus, NFTPortfolioContract, BluechipContract, Top10Contract, MetaContract, VenusContract,
+      RebalanceBLUE, RebalanceTOP10, RebalanceMETA});
     } 
   }
 
